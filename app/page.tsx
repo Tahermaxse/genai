@@ -1,18 +1,22 @@
-'use client'
+'use client';
 
-import CompetitorAnalysis from "@/components/CompetitorAnalysis";
-import Playground from "@/components/Playground/Playground";
-import SearchForm from "@/components/SearchForm";
-import Navbar from "@/components/ui/Navbar/Navbar";
+import CompetitorAnalysis from '@/components/CompetitorAnalysis';
+import SearchForm from '@/components/SearchForm';
+import Navbar from '@/components/ui/Navbar/Navbar';
+import Hero from '@/components/ui/Hero';
+import Footer from '@/components/Footer';
+import Features from '@/components/Features';
 
 export default function Home() {
+	return (
+		<>
+			<Navbar />
+			<Hero />
+			<Features />
+			<SearchForm />
 
-  return (
-    <>
-    {/* <Navbar />
-    <Playground /> */}
-    <SearchForm/>
-    <CompetitorAnalysis/>
-    </>
-  );
+			<CompetitorAnalysis />
+			<Footer />
+		</>
+	);
 }

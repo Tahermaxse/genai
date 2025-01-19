@@ -1,91 +1,99 @@
 'use client';
 
-import React, { useState } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { Menu, X } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const Navbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const [isScrolled, setIsScrolled] = useState(false);
 
-  return (
-    <div className="bg-white dark:bg-zinc-900">
-      <div className="relative flex justify-between py-4 px-6 items-center md:py-6">
-        {/* Logo */}
-        <a
-          className="flex items-center text-2xl font-bold text-zinc-800 dark:text-zinc-100"
-          aria-label="Logo"
-          href="/"
-        >
-          🔥 <span className="ml-2 text-xl">crawl</span>
-        </a>
+	useEffect(() => {
+		const handleScroll = () => setIsScrolled(window.scrollY > 0);
+		window.addEventListener('scroll', handleScroll);
+		return () => window.removeEventListener('scroll', handleScroll);
+	}, []);
 
-        {/* Desktop Menu */}
-        <nav className="hidden md:flex space-x-6">
-          <a href="/playground" className="text-zinc-600 dark:text-zinc-300 hover:text-zinc-800 dark:hover:text-white">
-            Playground
-          </a>
-          <a
-            href="https://docs.firecrawl.dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-zinc-600 dark:text-zinc-300 hover:text-zinc-800 dark:hover:text-white"
-          >
-            Docs
-          </a>
-          <a href="/pricing" className="text-zinc-600 dark:text-zinc-300 hover:text-zinc-800 dark:hover:text-white">
-            Pricing
-          </a>
-          <a href="/blog" className="text-zinc-600 dark:text-zinc-300 hover:text-zinc-800 dark:hover:text-white">
-            Blog
-          </a>
-          <button className="flex items-center text-zinc-600 dark:text-zinc-300 hover:text-zinc-800 dark:hover:text-white">
-            Beta Features
-            <ChevronDown className="ml-1 h-4 w-4" />
-          </button>
-          <button className="flex items-center text-zinc-600 dark:text-zinc-300 hover:text-zinc-800 dark:hover:text-white">
-            Resources
-            <ChevronDown className="ml-1 h-4 w-4" />
-          </button>
-        </nav>
+	const toggleMobileMenu = () => {
+		setIsMobileMenuOpen((prev) => !prev);
+	};
 
-        {/* Mobile Hamburger Menu */}
-        <button
-          className="md:hidden text-zinc-800 dark:text-zinc-100"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
-      </div>
+	const navLinks = [
+		{ href: '/enterprise', label: 'Enterprise' },
+		{ href: '/pricing', label: 'Pricing' },
+		{ href: '/resources/features', label: 'Features' },
+		{ href: '/blog', label: 'Blog' },
+	];
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-zinc-900 px-6 py-4">
-          <a href="/playground" className="block py-2 text-zinc-600 dark:text-zinc-300 hover:text-zinc-800 dark:hover:text-white">
-            Playground
-          </a>
-          <a
-            href="https://docs.firecrawl.dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block py-2 text-zinc-600 dark:text-zinc-300 hover:text-zinc-800 dark:hover:text-white"
-          >
-            Docs
-          </a>
-          <a href="/pricing" className="block py-2 text-zinc-600 dark:text-zinc-300 hover:text-zinc-800 dark:hover:text-white">
-            Pricing
-          </a>
-          <a href="/blog" className="block py-2 text-zinc-600 dark:text-zinc-300 hover:text-zinc-800 dark:hover:text-white">
-            Blog
-          </a>
-          <button className="block py-2 text-zinc-600 dark:text-zinc-300 hover:text-zinc-800 dark:hover:text-white">
-            Beta Features
-          </button>
-          <button className="block py-2 text-zinc-600 dark:text-zinc-300 hover:text-zinc-800 dark:hover:text-white">
-            Resources
-          </button>
-        </div>
-      )}
-    </div>
-  );
+	return (
+		<div className="fixed w-full top-0 z-50">
+			<div
+				className={`w-full max-w-[1440px] px-4 md:px-[34px] mx-auto flex justify-between items-center py-4 transition-all ${
+					isScrolled
+						? 'bg-gray-100 text-black rounded-3xl m-3 shadow-lg' // Added shadow for better visibility
+						: 'bg-primary-50/95 text-black'
+				}`}
+			>
+				<div className="flex items-center gap-2">
+					<Link href="/">
+						<Image
+							src={'/logo.webp'}
+							width={32}
+							height={32}
+							alt="Ferranax"
+							className="rounded-full"
+						/>
+					</Link>
+					<span className="font-medium italic text-xl ml-1.5">Ferranax</span>
+				</div>
+				<nav className="hidden lg:flex gap-8">
+					{navLinks.map((link, index) => (
+						<Link
+							key={index}
+							href={link.href}
+							className="hover:text-gray-600 transition-colors"
+						>
+							{link.label}
+						</Link>
+					))}
+				</nav>
+				<div className="flex items-center lg:hidden">
+					<button
+						onClick={toggleMobileMenu}
+						aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+						className="p-2"
+					>
+						{isMobileMenuOpen ? <X /> : <Menu />}
+					</button>
+				</div>
+			</div>
+			{isMobileMenuOpen && (
+				<div className="fixed inset-0 bg-primary-50 z-40 lg:hidden">
+					<ul className="flex flex-col items-center gap-4 py-6">
+						{navLinks.map((link, index) => (
+							<li key={index}>
+								<Link
+									href={link.href}
+									className="text-lg hover:text-gray-600 transition-colors"
+								>
+									{link.label}
+								</Link>
+							</li>
+						))}
+						<li>
+							<a
+								href="https://app.cal.com/signup"
+								className="text-lg hover:text-gray-600 transition-colors"
+							>
+								Get Started
+							</a>
+						</li>
+					</ul>
+				</div>
+			)}
+		</div>
+	);
 };
 
 export default Navbar;
