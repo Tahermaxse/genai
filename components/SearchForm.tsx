@@ -1,7 +1,7 @@
 // app/components/SearchForm.tsx
 'use client';
 
-import { useState } from 'react';
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from 'react';
 
 interface SearchResult {
 	marketingBlogs: string[];
@@ -110,14 +110,14 @@ export default function SearchForm() {
 								{getCategoryIcon(category)} {formatCategoryName(category)}
 							</h3>
 							<ul className="space-y-2">
-								{links.map((link, index) => (
+								{links.map((link: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined, index: Key | null | undefined) => (
 									<li
 										key={index}
 										className="flex items-start gap-2"
 									>
 										<span className="text-gray-400 mt-1">•</span>
 										<a
-											href={link}
+											href={typeof link === 'string' ? link : '#'}
 											target="_blank"
 											rel="noopener noreferrer"
 											className="text-blue-600 hover:text-blue-800 hover:underline break-all"

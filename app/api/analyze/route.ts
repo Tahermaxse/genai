@@ -105,7 +105,11 @@ async function scrapeWebsite(url: string): Promise<ScrapedData> {
 
   } catch (error) {
     console.error(`Error scraping ${url}:`, error);
-    throw new Error(`Failed to scrape ${url}: ${error.message}`);
+    if (error instanceof Error) {
+      throw new Error(`Failed to scrape ${url}: ${error.message}`);
+    } else {
+      throw new Error(`Failed to scrape ${url}: Unknown error`);
+    }
   }
 }
 
@@ -179,9 +183,13 @@ async function analyzeWithGemini(scrapedData: ScrapedData[]): Promise<AnalysisRe
     }
 
     return parsed as AnalysisResult;
-  } catch (error) {
+  } catch (error ) {
     console.error('Analysis Error:', error);
-    throw new Error(`Analysis failed: ${error.message}`);
+    if (error instanceof Error) {
+      throw new Error(`Analysis failed: ${error.message}`);
+    } else {
+      throw new Error('Analysis failed: Unknown error');
+    }
   }
 }
 
@@ -230,7 +238,7 @@ export async function POST(request: Request) {
     } catch (error) {
       return new Response(JSON.stringify({ 
         error: 'Analysis failed',
-        details: error.message,
+        details: error instanceof Error ? error.message : 'Unknown error',
       }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
